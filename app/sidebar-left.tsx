@@ -1,9 +1,9 @@
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
 import Image from "next/image";
 
-const Sidebar = () => {
+const SidebarLeft = () => {
   return (
-    <Box py="4" className="space-y-2">
+    <Box py="2" className="space-y-2 h-[calc(100dvh-60px)] overflow-auto">
       <Flex
         align="center"
         gap="2"
@@ -58,4 +58,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarLeft;
