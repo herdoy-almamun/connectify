@@ -10,8 +10,8 @@ import { TbHomeFilled } from "react-icons/tb";
 
 const Navbar = () => {
   return (
-    <Box className="py-3 shadow-md">
-      <Container size="4">
+    <Box className="shadow-md">
+      <Container size="4" className="h-[60px] flex items-center justify-center">
         <Grid columns="3">
           <Flex align="center" gap="3">
             <Link href="/">
