@@ -1,7 +1,7 @@
 import { Box, Container, Grid } from "@radix-ui/themes";
 import Navbar from "./_components/navbar";
-import Sidebar from "./_components/sidebar";
 import Feed from "./feed";
+import Sidebar from "./sidebar";
 
 const Home = () => {
   return (
