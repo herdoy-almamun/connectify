@@ -1,5 +1,5 @@
 import { Container, Grid } from "@radix-ui/themes";
-import Navbar from "./_components/navbar";
+import Navbar from "./navbar";
 import Feed from "./feed";
 import SidebarLeft from "./sidebar-left";
 import SidebarRigh from "./sidebar-right";

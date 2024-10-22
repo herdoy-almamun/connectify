@@ -10,14 +10,23 @@ import { TbHomeFilled } from "react-icons/tb";
 
 const Navbar = () => {
   return (
-    <Box className="shadow-md">
+    <Box className="shadow-md px-3">
       <Container size="4" className="h-[60px] flex items-center justify-center">
-        <Grid columns="3">
+        <Grid columns={{ initial: "2", md: "3" }}>
           <Flex align="center" gap="3">
             <Link href="/">
               <Image src="/logo.png" width={40} height={40} alt="logo" />
             </Link>
             <Flex
+              className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer"
+              align="center"
+              justify="center"
+              display={{ initial: "flex", md: "none" }}
+            >
+              <IoSearch className="text-xl text-gray-600" />
+            </Flex>
+            <Flex
+              display={{ initial: "none", md: "flex" }}
               align="center"
               className="border border-gray-500 p-2 rounded-full"
               gap="1"
@@ -30,7 +39,11 @@ const Navbar = () => {
               />
             </Flex>
           </Flex>
-          <Flex align="center" justify="between">
+          <Flex
+            display={{ initial: "none", md: "flex" }}
+            align="center"
+            justify="between"
+          >
             <Link href="/" className="hover:text-primary transition-colors">
               <TbHomeFilled className="text-2xl" />
             </Link>
@@ -45,7 +58,7 @@ const Navbar = () => {
             </Link>
           </Flex>
 
-          <Flex align="center" justify="end" gap="6">
+          <Flex align="center" justify="end" gap={{ initial: "3", md: "6" }}>
             <Link
               href="/"
               className="!w-11 !h-11 rounded-full bg-gray-200 hover:bg-gray-300 transition flex items-center justify-center"
