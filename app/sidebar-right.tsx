@@ -3,7 +3,11 @@ import Image from "next/image";
 
 const SidebarRigh = () => {
   return (
-    <Box py="2" className="space-y-2 h-[calc(100dvh-60px)] overflow-auto">
+    <Box
+      display={{ initial: "none", md: "block" }}
+      py="2"
+      className="space-y-2 h-[calc(100dvh-60px)] overflow-auto"
+    >
       <Flex
         align="center"
         justify="end"

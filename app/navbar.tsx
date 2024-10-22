@@ -1,6 +1,7 @@
 import { Avatar, Box, Container, Flex, Grid } from "@radix-ui/themes";
 import Image from "next/image";
 import Link from "next/link";
+import { CgMenuGridO } from "react-icons/cg";
 import { HiUserGroup } from "react-icons/hi";
 import { ImUsers } from "react-icons/im";
 import { IoNotifications, IoSearch } from "react-icons/io5";
@@ -59,6 +60,12 @@ const Navbar = () => {
           </Flex>
 
           <Flex align="center" justify="end" gap={{ initial: "3", md: "6" }}>
+            <Link
+              href="/"
+              className="!w-11 !h-11 rounded-full bg-gray-200 hover:bg-gray-300 transition flex items-center justify-center lg:hidden"
+            >
+              <CgMenuGridO className="text-xl" />
+            </Link>
             <Link
               href="/"
               className="!w-11 !h-11 rounded-full bg-gray-200 hover:bg-gray-300 transition flex items-center justify-center"
