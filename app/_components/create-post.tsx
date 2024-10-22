@@ -14,39 +14,36 @@ const CreatePost = () => {
         />
       </Flex>
       <hr />
-      <Flex align="center" justify="between" gap="3">
+      <Flex align="center" justify="between" gap={{ initial: "2", md: "3" }}>
         <Flex
           align="center"
           justify="center"
           gap="2"
-          px="3"
           py="2"
           className="flex-1 hover:bg-gray-200 rounded-lg cursor-pointer"
         >
-          <FaVideo className="text-2xl text-red-500" />
-          <span>Live Video</span>
+          <FaVideo className="text-xl md:text-2xl text-red-500" />
+          <span className="sm:text-sm">Live Video</span>
         </Flex>
         <Flex
           align="center"
           justify="center"
           gap="2"
-          px="3"
           py="2"
           className="flex-1 hover:bg-gray-200 rounded-lg cursor-pointer"
         >
-          <IoMdPhotos className="text-2xl text-green-500" />
-          <span>Photo/Video</span>
+          <IoMdPhotos className="text-xl md:text-2xl text-green-500" />
+          <span className="sm:text-sm">Photo/Video</span>
         </Flex>
         <Flex
           align="center"
           justify="center"
           gap="2"
-          px="3"
           py="2"
           className="flex-1 hover:bg-gray-200 rounded-lg cursor-pointer"
         >
-          <TfiVideoClapper className="text-2xl text-red-500" />{" "}
-          <span>Reel</span>
+          <TfiVideoClapper className="text-xl md:text-2xl text-red-500" />{" "}
+          <span className="sm:text-sm">Reel</span>
         </Flex>
       </Flex>
     </Box>
