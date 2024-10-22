@@ -60,24 +60,28 @@ const Navbar = () => {
           </Flex>
 
           <Flex align="center" justify="end" gap={{ initial: "3", md: "6" }}>
-            <Link
-              href="/"
-              className="!w-11 !h-11 rounded-full bg-gray-200 hover:bg-gray-300 transition flex items-center justify-center lg:hidden"
+            <Flex
+              display={{ initial: "flex", md: "none" }}
+              align="center"
+              justify="center"
+              className="w-10 h-10 bg-gray-200 hover:bg-gray-400 transition rounded-full"
             >
               <CgMenuGridO className="text-xl" />
-            </Link>
-            <Link
-              href="/"
-              className="!w-11 !h-11 rounded-full bg-gray-200 hover:bg-gray-300 transition flex items-center justify-center"
+            </Flex>
+            <Flex
+              align="center"
+              justify="center"
+              className="w-10 h-10 bg-gray-200 hover:bg-gray-400 transition rounded-full"
             >
               <PiMessengerLogoFill className="text-xl" />
-            </Link>
-            <Link
-              href="/"
-              className="!w-11 !h-11 rounded-full bg-gray-200 hover:bg-gray-300 transition flex items-center justify-center"
+            </Flex>
+            <Flex
+              align="center"
+              justify="center"
+              className="w-10 h-10 bg-gray-200 hover:bg-gray-400 transition rounded-full"
             >
               <IoNotifications className="text-xl" />
-            </Link>
+            </Flex>
             <Avatar src="/me.webp" fallback="H" radius="full" />
           </Flex>
         </Grid>
