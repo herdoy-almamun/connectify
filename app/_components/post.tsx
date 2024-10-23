@@ -19,7 +19,7 @@ const Post = () => {
             <Text size="2" className="font-semibold">
               Herdoy Almamun
             </Text>
-            <Flex align="center" gap="2">
+            <Flex align="center" gap="1">
               <BsGlobe />
               <span className="text-sm"> Oct-22</span>
             </Flex>

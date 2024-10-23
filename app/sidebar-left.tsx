@@ -1,7 +1,11 @@
+"use client";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
 import Image from "next/image";
+import { useContext } from "react";
+import { AuthContext } from "./auth-provdier";
 
 const SidebarLeft = () => {
+  const user = useContext(AuthContext);
   return (
     <Box
       display={{ initial: "none", md: "block" }}
@@ -14,9 +18,13 @@ const SidebarLeft = () => {
         className="cursor-pointer hover:bg-gray-200 p-2 rounded-md"
       >
         <Box className="w-10 flex items-center justify-center">
-          <Avatar src="/me.webp" radius="full" fallback="U" />
+          <Avatar
+            src={user?.image!}
+            radius="full"
+            fallback={user?.name?.slice(0, 1).toLocaleUpperCase()!}
+          />
         </Box>
-        <Text>Herdoy Almamun</Text>
+        <Text> {user?.name} </Text>
       </Flex>
       <Flex
         align="center"

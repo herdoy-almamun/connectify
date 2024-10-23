@@ -1,3 +1,4 @@
+"use client";
 import {
   Carousel,
   CarouselContent,
@@ -5,9 +6,12 @@ import {
 } from "@/components/ui/carousel";
 import { Avatar, Box, Grid } from "@radix-ui/themes";
 import Image from "next/image";
+import { useContext } from "react";
 import { HiOutlinePlus } from "react-icons/hi";
+import { AuthContext } from "../auth-provdier";
 
 const Storys = () => {
+  const user = useContext(AuthContext);
   return (
     <Carousel>
       <CarouselContent>
@@ -19,10 +23,10 @@ const Storys = () => {
             <Box className="overflow-hidden">
               <div className="w-full h-full flex items-center justify-center bg-yellow-300">
                 <Image
-                  src="/me.webp"
+                  src={user?.image!}
                   width={200}
                   height={200}
-                  alt="M"
+                  alt={user?.name?.slice(0, 1).toLocaleUpperCase()!}
                   className="w-full h-full object-cover"
                 />
               </div>

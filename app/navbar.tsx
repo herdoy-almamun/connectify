@@ -1,6 +1,8 @@
+"use client";
 import { Avatar, Box, Container, Flex, Grid } from "@radix-ui/themes";
 import Image from "next/image";
 import Link from "next/link";
+import { useContext } from "react";
 import { CgMenuGridO } from "react-icons/cg";
 import { HiUserGroup } from "react-icons/hi";
 import { ImUsers } from "react-icons/im";
@@ -8,8 +10,10 @@ import { IoNotifications, IoSearch } from "react-icons/io5";
 import { PiMessengerLogoFill } from "react-icons/pi";
 import { RxVideo } from "react-icons/rx";
 import { TbHomeFilled } from "react-icons/tb";
+import { AuthContext } from "./auth-provdier";
 
 const Navbar = () => {
+  const user = useContext(AuthContext);
   return (
     <Box className="shadow-md px-3">
       <Container size="4" className="h-[60px] flex items-center justify-center">
@@ -82,7 +86,11 @@ const Navbar = () => {
             >
               <IoNotifications className="text-xl" />
             </Flex>
-            <Avatar src="/me.webp" fallback="H" radius="full" />
+            <Avatar
+              src={user?.image!}
+              radius="full"
+              fallback={user?.name?.slice(0, 1).toLocaleUpperCase()!}
+            />
           </Flex>
         </Grid>
       </Container>
