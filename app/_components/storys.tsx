@@ -12,6 +12,7 @@ import { AuthContext } from "../auth-provdier";
 
 const Storys = () => {
   const user = useContext(AuthContext);
+  if (!user) return null;
   return (
     <Carousel>
       <CarouselContent>
