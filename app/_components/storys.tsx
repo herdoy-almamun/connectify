@@ -21,7 +21,7 @@ const Storys = () => {
             className="overflow-hidden rounded-xl border cursor-pointer h-full"
           >
             <Box className="overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center bg-yellow-300">
+              <div className="w-full h-full flex items-center justify-center">
                 <Image
                   src={user?.image!}
                   width={200}
