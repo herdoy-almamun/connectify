@@ -1,9 +1,5 @@
 "use client";
 
-import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
-import { useForm } from "react-hook-form";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,7 +10,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { joiResolver } from "@hookform/resolvers/joi";
 import { Grid } from "@radix-ui/themes";
+import axios from "axios";
+import Joi from "joi";
+import { User } from "next-auth";
+import { signIn } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 interface FormData {
   firstName: string;
@@ -42,7 +45,24 @@ const RegisterForm = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((data) => console.log(data))}
+        onSubmit={form.handleSubmit((data) => {
+          const { firstName, lastName, email, password } = data;
+          axios
+            .post<User>("/api/users", {
+              name: `${firstName} ${lastName}`,
+              email,
+              password,
+            })
+            .then(() => {
+              toast.success("Sign Up Success!");
+              signIn("credentials", {
+                email,
+                password,
+                callbackUrl: "/",
+              });
+            })
+            .catch(() => toast.error("Something went worn!"));
+        })}
         className="space-y-3 w-full"
       >
         <Grid columns="1fr 1fr" gap="3">

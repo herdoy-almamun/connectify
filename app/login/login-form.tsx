@@ -1,9 +1,5 @@
 "use client";
 
-import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
-import { useForm } from "react-hook-form";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,6 +10,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { joiResolver } from "@hookform/resolvers/joi";
+import Joi from "joi";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 interface FormData {
   email: string;
@@ -30,18 +32,34 @@ const formSchema = Joi.object({
 });
 
 const LoginForm = () => {
+  const router = useRouter();
   const form = useForm<FormData>({
     resolver: joiResolver(formSchema),
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: FormData) {
-    console.log(values);
-  }
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+      <form
+        onSubmit={form.handleSubmit((data) => {
+          const { email, password } = data;
+
+          signIn("credentials", {
+            email,
+            password,
+            callbackUrl: "/issues",
+            redirect: false,
+          }).then((res) => {
+            if (res?.ok) {
+              toast.success("Login Success!");
+              router.push("/");
+            }
+            if (res?.error) {
+              toast.error("Invalid username or password");
+            }
+          });
+        })}
+        className="space-y-3"
+      >
         <FormField
           control={form.control}
           name="email"
