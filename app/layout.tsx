@@ -2,11 +2,12 @@ import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import "react-image-crop/dist/ReactCrop.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AuthProvdier from "./auth-provdier";
 import "./globals.css";
 import QueryClientProvider from "./query-client-provider";
-import AuthProvdier from "./auth-provdier";
 import SessionProvider from "./session-provider";
 
 const geistSans = localFont({

@@ -4,8 +4,10 @@ import Image from "next/image";
 import { useContext } from "react";
 import { AuthContext } from "./auth-provdier";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const SidebarLeft = () => {
+  const router = useRouter();
   const user = useContext(AuthContext);
   return (
     <Box
@@ -14,6 +16,7 @@ const SidebarLeft = () => {
       className="space-y-2 h-[calc(100dvh-60px)] overflow-auto"
     >
       <Flex
+        onClick={() => router.push("/profile")}
         align="center"
         gap="2"
         className="cursor-pointer hover:bg-gray-200 p-2 rounded-md"
