@@ -3,6 +3,7 @@ import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
 import Image from "next/image";
 import { useContext } from "react";
 import { AuthContext } from "./auth-provdier";
+import { signOut } from "next-auth/react";
 
 const SidebarLeft = () => {
   const user = useContext(AuthContext);
@@ -65,6 +66,17 @@ const SidebarLeft = () => {
           <Image width={30} height={30} src="/icons/messenger.png" alt="U" />
         </Box>
         <Text>Messenger</Text>
+      </Flex>
+      <Flex
+        onClick={() => signOut()}
+        align="center"
+        gap="2"
+        className="cursor-pointer hover:bg-gray-200 p-2 rounded-md"
+      >
+        <Box className="w-10 flex items-center justify-center">
+          <Image width={30} height={30} src="/icons/logout.png" alt="U" />
+        </Box>
+        <Text>Log Out</Text>
       </Flex>
     </Box>
   );

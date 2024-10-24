@@ -1,19 +1,12 @@
-"use client";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { Avatar, Box, Grid } from "@radix-ui/themes";
-import Image from "next/image";
-import { useContext } from "react";
+import { Box, Grid, Skeleton } from "@radix-ui/themes";
 import { HiOutlinePlus } from "react-icons/hi";
-import { AuthContext } from "../auth-provdier";
-import SStorys from "@/components/skeletons/s-storys";
 
-const Storys = () => {
-  const user = useContext(AuthContext);
-  if (!user) return <SStorys />;
+const SStorys = () => {
   return (
     <Carousel>
       <CarouselContent>
@@ -24,13 +17,7 @@ const Storys = () => {
           >
             <Box className="overflow-hidden">
               <div className="w-full h-full flex items-center justify-center">
-                <Image
-                  src={user?.image!}
-                  width={200}
-                  height={200}
-                  alt={user?.name?.slice(0, 1).toLocaleUpperCase()!}
-                  className="w-full h-full object-cover"
-                />
+                <Skeleton className="w-full h-full object-cover" />
               </div>
             </Box>
             <Box>
@@ -49,20 +36,8 @@ const Storys = () => {
             className="basis-1/3 lg:basis-1/4 h-[180px] lg:h-[200px]"
           >
             <Box className="h-full w-full rounded-xl overflow-hidden relative">
-              <Avatar
-                src="/me.webp"
-                size="3"
-                radius="full"
-                className="absolute top-2 right-2 border-primary border-2"
-                fallback="U"
-              />
-              <Image
-                src="/mel.png"
-                width={200}
-                height={220}
-                alt="M"
-                className="w-full h-full object-cover"
-              />
+              <Skeleton className="w-10 h-10 !rounded-full absolute top-2 right-2 border-primary border-2" />
+              <Skeleton className="w-full h-full object-cover" />
             </Box>
           </CarouselItem>
         ))}
@@ -71,4 +46,4 @@ const Storys = () => {
   );
 };
 
-export default Storys;
+export default SStorys;

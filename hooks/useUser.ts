@@ -7,6 +7,7 @@ const useUser = (email: string) =>
     queryKey: ["user"],
     queryFn: () =>
       axios.get<User>(`/api/users/${email}`).then((res) => res.data),
+    staleTime: 10_000_000,
   });
 
 export default useUser;
