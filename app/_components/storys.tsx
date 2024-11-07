@@ -6,11 +6,10 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import useStorys from "@/hooks/useStorys";
-import { Avatar, Box } from "@radix-ui/themes";
-import Image from "next/image";
 import { useContext } from "react";
 import { AuthContext } from "../auth-provdier";
 import CreateStory from "./create-story";
+import StoryItem from "./story-item";
 
 const Storys = () => {
   const user = useContext(AuthContext);
@@ -31,22 +30,7 @@ const Storys = () => {
             key={story.id}
             className="basis-1/3 lg:basis-1/4 h-[180px] lg:h-[200px]"
           >
-            <Box className="h-full w-full rounded-xl overflow-hidden relative">
-              <Avatar
-                src="/me.webp"
-                size="3"
-                radius="full"
-                className="absolute top-2 right-2 border-primary border-2"
-                fallback="U"
-              />
-              <Image
-                src={story.image}
-                width={200}
-                height={220}
-                alt="M"
-                className="w-full h-full object-cover"
-              />
-            </Box>
+            <StoryItem story={story} />
           </CarouselItem>
         ))}
       </CarouselContent>
