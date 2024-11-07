@@ -1,10 +1,10 @@
 "use client";
 
-import ImageUploader from "@/components/image-uploader";
 import { Avatar, Box, Container, Flex, Heading, Text } from "@radix-ui/themes";
 import { useContext } from "react";
 import { AuthContext } from "../auth-provdier";
 import Navbar from "../navbar";
+import UpdateProfileImage from "./update-profile-image";
 
 const Profile = () => {
   const user = useContext(AuthContext);
@@ -22,7 +22,7 @@ const Profile = () => {
               fallback={user?.name!}
             />
             <Box className="absolute bottom-0  right-4">
-              <ImageUploader />
+              <UpdateProfileImage />
             </Box>
           </Flex>
           <Flex align="center" justify="center" direction="column">

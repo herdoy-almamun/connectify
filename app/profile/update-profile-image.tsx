@@ -3,7 +3,6 @@ import { AuthContext } from "@/app/auth-provdier";
 import { queryClient } from "@/app/query-client-provider";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -12,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { storage } from "@/firebase";
 import setCanvasPreview from "@/set-canvas-preview";
 import { Flex } from "@radix-ui/themes";
@@ -29,11 +29,13 @@ import ReactCrop, {
 const ASPECT_RATIO = 4 / 4;
 const MIN_DIMENSION = 150;
 
-const ImageUploader = () => {
+const UpdateProfileImage = () => {
   const user = useContext(AuthContext);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [imgSrc, setImgSrc] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const [crop, setCrop] = useState<Crop | undefined>(undefined);
   const [error, setError] = useState<string>("");
 
@@ -79,7 +81,7 @@ const ImageUploader = () => {
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger>
         <Flex
           align="center"
@@ -99,7 +101,7 @@ const ImageUploader = () => {
             </label>
             {error && <p className="text-red-400 text-xs">{error}</p>}
             {imgSrc && (
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center relative">
                 <ReactCrop
                   crop={crop}
                   onChange={(pixelCrop, percentCrop) => setCrop(percentCrop)}
@@ -116,6 +118,11 @@ const ImageUploader = () => {
                     onLoad={onImageLoad}
                   />
                 </ReactCrop>
+                {loading && (
+                  <div className="w-full h-full bg-black/60 absolute flex items-center justify-center">
+                    <div className="loader"></div>
+                  </div>
+                )}
               </div>
             )}
             {crop && (
@@ -135,8 +142,10 @@ const ImageUploader = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
+          <Button
+            disabled={loading}
             onClick={async () => {
+              setLoading(true);
               if (imgRef.current && previewCanvasRef.current && crop) {
                 setCanvasPreview(
                   imgRef.current, // HTMLImageElement
@@ -155,6 +164,8 @@ const ImageUploader = () => {
                 await uploadBytesResumable(storageRef, blob).then(() => {
                   getDownloadURL(storageRef).then(
                     async (downloadURL: string) => {
+                      setLoading(false);
+                      setOpen(false);
                       axios
                         .put(`/api/users/${user?.email}`, {
                           image: downloadURL,
@@ -169,11 +180,11 @@ const ImageUploader = () => {
             }}
           >
             Continue
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
 };
 
-export default ImageUploader;
+export default UpdateProfileImage;
