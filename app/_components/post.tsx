@@ -1,5 +1,9 @@
+"use client";
+import { Post, User } from "@prisma/client";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
+import axios from "axios";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { BsGlobe } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
 import { FaHeart, FaRegComment } from "react-icons/fa6";
@@ -9,19 +13,36 @@ import { LuHeart } from "react-icons/lu";
 import { PiShareFatLight } from "react-icons/pi";
 import { SlOptions } from "react-icons/sl";
 
-const Post = () => {
+interface Props {
+  post: Post;
+}
+
+const SinglePost = ({ post }: Props) => {
+  const [user, setUser] = useState<User>();
+
+  useEffect(() => {
+    axios.get(`/api/user/${post.userId}`).then((res) => setUser(res.data));
+  }, [post]);
+
+  function formatDate(input: string | Date): string {
+    const date = typeof input === "string" ? new Date(input) : input;
+    return date.toDateString();
+  }
+
+  if (!post) return null;
+
   return (
     <Box className="border rounded-lg shadow-md">
       <Flex align="center" justify="between" p="4">
         <Flex align="center" gap="2">
-          <Avatar src="/me.webp" radius="full" fallback="U" />
+          <Avatar src={user?.image!} radius="full" fallback="U" />
           <Box>
             <Text size="2" className="font-semibold">
-              Herdoy Almamun
+              {user?.name}
             </Text>
             <Flex align="center" gap="1">
               <BsGlobe />
-              <span className="text-sm"> Oct-22</span>
+              <span className="text-sm"> {formatDate(post.createdAt)} </span>
             </Flex>
           </Box>
         </Flex>
@@ -30,23 +51,22 @@ const Post = () => {
           <IoClose className="text-2xl" />
         </Flex>
       </Flex>
-      <Box px="4" pb="4">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem
-          similique suscipit ullam fuga architecto consectetur nihil distinctio
-          fugit eos neque dolor quam pariatur voluptate tenetur, minus dicta
-          numquam ipsum doloribus?
-        </p>
-      </Box>
-      <Box>
-        <Image
-          src="/test.jpg"
-          width={500}
-          height={600}
-          alt="Text"
-          className="w-full h-full object-cover"
-        />
-      </Box>
+      {post.text && (
+        <Box px="4" pb="4">
+          <p>{post.text}</p>
+        </Box>
+      )}
+      {post.image && (
+        <Box>
+          <Image
+            src={post.image}
+            width={500}
+            height={600}
+            alt="Text"
+            className="w-full h-full object-cover"
+          />
+        </Box>
+      )}
       <Flex align="center" justify="between" py="3" px="4">
         <Flex align="center" gap="1">
           <FaHeart className="text-primary" />
@@ -99,4 +119,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default SinglePost;
