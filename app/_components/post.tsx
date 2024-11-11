@@ -1,4 +1,6 @@
 "use client";
+import useLike from "@/hooks/useLike";
+import useLikes from "@/hooks/useLikes";
 import { Post, User } from "@prisma/client";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
 import axios from "axios";
@@ -19,6 +21,7 @@ interface Props {
 
 const SinglePost = ({ post }: Props) => {
   const [user, setUser] = useState<User>();
+  const [isLike, setIsLike] = useState<boolean>();
 
   useEffect(() => {
     axios.get(`/api/user/${post.userId}`).then((res) => setUser(res.data));
@@ -28,6 +31,20 @@ const SinglePost = ({ post }: Props) => {
     const date = typeof input === "string" ? new Date(input) : input;
     return date.toDateString();
   }
+
+  const { data: likes } = useLikes(post.id);
+  const { mutate } = useLike();
+
+  const handleLike = () => {
+    mutate({ userId: user?.id!, postId: post.id });
+    setIsLike(!isLike);
+  };
+
+  useEffect(() => {
+    likes?.map((like) =>
+      like.userId === user?.id ? setIsLike(false) : setIsLike(true)
+    );
+  }, [mutate, post]);
 
   if (!post) return null;
 
@@ -70,7 +87,7 @@ const SinglePost = ({ post }: Props) => {
       <Flex align="center" justify="between" py="3" px="4">
         <Flex align="center" gap="1">
           <FaHeart className="text-primary" />
-          <span className="text-sm">104</span>
+          <span className="text-sm"> {likes?.length} </span>
         </Flex>
         <Flex align="center" gap="6">
           <Flex align="center" gap="1">
@@ -86,13 +103,19 @@ const SinglePost = ({ post }: Props) => {
       <hr />
       <Flex align="center" justify="between" px="2" py="1">
         <Flex
+          onClick={handleLike}
           align="center"
           justify="center"
           gap="2"
           p="3"
           className="flex-1 rounded-md cursor-pointer hover:bg-gray-200"
         >
-          <LuHeart className="text-xl" /> <span className="text-sm">Like</span>
+          {isLike ? (
+            <FaHeart className="text-xl text-primary" />
+          ) : (
+            <LuHeart className="text-xl" />
+          )}{" "}
+          <span className="text-sm">Like</span>
         </Flex>
         <Flex
           align="center"
