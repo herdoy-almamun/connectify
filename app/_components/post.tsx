@@ -5,7 +5,7 @@ import { Post, User } from "@prisma/client";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
 import axios from "axios";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BsGlobe } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
 import { FaHeart, FaRegComment } from "react-icons/fa6";
@@ -14,6 +14,7 @@ import { IoClose } from "react-icons/io5";
 import { LuHeart } from "react-icons/lu";
 import { PiShareFatLight } from "react-icons/pi";
 import { SlOptions } from "react-icons/sl";
+import { AuthContext } from "../auth-provdier";
 
 interface Props {
   post: Post;
@@ -21,7 +22,9 @@ interface Props {
 
 const SinglePost = ({ post }: Props) => {
   const [user, setUser] = useState<User>();
-  const [isLike, setIsLike] = useState<boolean>();
+  const [isLike, setIsLike] = useState<boolean>(false);
+
+  const authUser = useContext(AuthContext);
 
   useEffect(() => {
     axios.get(`/api/user/${post.userId}`).then((res) => setUser(res.data));
@@ -36,17 +39,16 @@ const SinglePost = ({ post }: Props) => {
   const { mutate } = useLike();
 
   const handleLike = () => {
-    mutate({ userId: user?.id!, postId: post.id });
+    mutate({ userId: authUser?.id!, postId: post.id });
     setIsLike(!isLike);
   };
 
   useEffect(() => {
-    likes?.map((like) =>
-      like.postId === post.id && like.userId === user?.id
-        ? setIsLike(false)
-        : setIsLike(true)
+    const userLiked = likes?.some(
+      (like) => like.postId === post.id && like.userId === authUser?.id
     );
-  }, [mutate, post]);
+    setIsLike(userLiked || false);
+  }, [likes, authUser?.id, post.id]);
 
   if (!post) return null;
 
