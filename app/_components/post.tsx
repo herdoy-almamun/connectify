@@ -42,7 +42,9 @@ const SinglePost = ({ post }: Props) => {
 
   useEffect(() => {
     likes?.map((like) =>
-      like.userId === user?.id ? setIsLike(false) : setIsLike(true)
+      like.postId === post.id && like.userId === user?.id
+        ? setIsLike(false)
+        : setIsLike(true)
     );
   }, [mutate, post]);
 
