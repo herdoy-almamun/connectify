@@ -1,4 +1,5 @@
 "use client";
+import useComments from "@/hooks/useComments";
 import useLike from "@/hooks/useLike";
 import useLikes from "@/hooks/useLikes";
 import { Post, User } from "@prisma/client";
@@ -8,13 +9,14 @@ import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { BsGlobe } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
-import { FaHeart, FaRegComment } from "react-icons/fa6";
+import { FaHeart } from "react-icons/fa6";
 import { IoIosShareAlt } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { LuHeart } from "react-icons/lu";
 import { PiShareFatLight } from "react-icons/pi";
 import { SlOptions } from "react-icons/sl";
 import { AuthContext } from "../auth-provdier";
+import Comments from "./comments";
 
 interface Props {
   post: Post;
@@ -36,6 +38,7 @@ const SinglePost = ({ post }: Props) => {
   }
 
   const { data: likes } = useLikes(post.id);
+  const { data: comments } = useComments(post.id);
   const { mutate } = useLike();
 
   const handleLike = () => {
@@ -96,7 +99,7 @@ const SinglePost = ({ post }: Props) => {
         <Flex align="center" gap="6">
           <Flex align="center" gap="1">
             <FaComment className="text-gray-600" />
-            <span className="text-sm">8</span>
+            <span className="text-sm"> {comments?.length} </span>
           </Flex>
           <Flex align="center" gap="1">
             <IoIosShareAlt className="text-gray-600 text-2xl" />
@@ -121,16 +124,11 @@ const SinglePost = ({ post }: Props) => {
           )}{" "}
           <span className="text-sm">Like</span>
         </Flex>
-        <Flex
-          align="center"
-          justify="center"
-          gap="2"
-          p="3"
-          className="flex-1 rounded-md cursor-pointer hover:bg-gray-200"
-        >
-          <FaRegComment className="text-xl" />
-          <span className="text-sm">Comment</span>
-        </Flex>
+        <Comments
+          postAuthorImage={user?.image as string}
+          postAuthorName={user?.name as string}
+          post={post}
+        />
         <Flex
           align="center"
           justify="center"

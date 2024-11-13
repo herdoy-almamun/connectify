@@ -2,7 +2,16 @@ import prisma from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
-  const storys = await prisma.story.findMany();
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const storys = await prisma.story.findMany({
+    where: {
+      createdAt: {
+        gte: startOfToday,
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
   return NextResponse.json(storys);
 };
 

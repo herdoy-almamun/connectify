@@ -101,3 +101,10 @@ model Like {
   postId String @db.ObjectId
   userId String @db.ObjectId
 }
+
+model Comment {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  postId  String @db.ObjectId
+  userId  String @db.ObjectId
+  comment String
+}
