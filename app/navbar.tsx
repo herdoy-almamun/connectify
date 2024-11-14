@@ -72,13 +72,12 @@ const Navbar = () => {
             >
               <CgMenuGridO className="text-xl" />
             </Flex>
-            <Flex
-              align="center"
-              justify="center"
-              className="w-10 h-10 bg-gray-200 hover:bg-gray-400 transition rounded-full"
+            <Link
+              href="/messenger"
+              className="flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-400 transition rounded-full"
             >
               <PiMessengerLogoFill className="text-xl" />
-            </Flex>
+            </Link>
             <Flex
               align="center"
               justify="center"

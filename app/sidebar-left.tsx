@@ -1,10 +1,11 @@
 "use client";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
+import { signOut } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { AuthContext } from "./auth-provdier";
-import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 const SidebarLeft = () => {
   const router = useRouter();
@@ -60,16 +61,15 @@ const SidebarLeft = () => {
         </Box>
         <Text>Videos</Text>
       </Flex>
-      <Flex
-        align="center"
-        gap="2"
-        className="cursor-pointer hover:bg-gray-200 p-2 rounded-md"
+      <Link
+        href="/messenger"
+        className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-md"
       >
         <Box className="w-10 flex items-center justify-center">
           <Image width={30} height={30} src="/icons/messenger.png" alt="U" />
         </Box>
         <Text>Messenger</Text>
-      </Flex>
+      </Link>
       <Flex
         onClick={() => signOut()}
         align="center"
