@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
+import { string } from "joi";
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,

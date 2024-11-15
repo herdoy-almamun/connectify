@@ -5,7 +5,12 @@ import { PiPaperclip, PiPhoneCall } from "react-icons/pi";
 
 const MessageArea = () => {
   return (
-    <Grid className="border-r h-dvh" columns="1" rows="55px 1fr 55px">
+    <Grid
+      display={{ initial: "none", md: "grid" }}
+      className="border-r h-dvh"
+      columns="1"
+      rows="55px 1fr 55px"
+    >
       <Flex
         px="4"
         align="center"
@@ -26,7 +31,7 @@ const MessageArea = () => {
         gap="3"
         direction="column"
         p="4"
-        className="bg-gray-200 overflow-auto"
+        className="bg-gray-100 overflow-auto"
       >
         <Box
           className="max-w-[200px] md:max-w-[500px] border shadow rounded-lg bg-primary/5"

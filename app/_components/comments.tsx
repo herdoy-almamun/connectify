@@ -115,7 +115,7 @@ const Comments = ({ postAuthorImage, postAuthorName, post }: Props) => {
           />
         </Box>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>Close</AlertDialogCancel>
           <Button
             disabled={!comment}
             onClick={() => {
