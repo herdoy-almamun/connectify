@@ -122,6 +122,7 @@ model Chat {
 model Message {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   chatId    String   @db.ObjectId
+  sender    String
   text      String?
   image     String?
   createdAt DateTime @default(now())

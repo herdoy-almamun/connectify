@@ -2,6 +2,7 @@
 import useComments from "@/hooks/useComments";
 import useLike from "@/hooks/useLike";
 import useLikes from "@/hooks/useLikes";
+import formatDate from "@/utils/formateDate";
 import { Post, User } from "@prisma/client";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
 import axios from "axios";
@@ -31,11 +32,6 @@ const SinglePost = ({ post }: Props) => {
   useEffect(() => {
     axios.get(`/api/user/${post.userId}`).then((res) => setUser(res.data));
   }, [post]);
-
-  function formatDate(input: string | Date): string {
-    const date = typeof input === "string" ? new Date(input) : input;
-    return date.toDateString();
-  }
 
   const { data: likes } = useLikes(post.id);
   const { data: comments } = useComments(post.id);

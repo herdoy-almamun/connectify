@@ -4,16 +4,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoMdMenu } from "react-icons/io";
 
-import { User } from "@prisma/client";
+import { useChatStore } from "@/store";
+import { Chat, User } from "@prisma/client";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { AuthContext } from "../auth-provdier";
+import ChatDetails from "./chat";
 
 const ChatArea = () => {
   const [name, setName] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const user = useContext(AuthContext);
+  const setSelectedChat = useChatStore((s) => s.setSelectedChat);
+  const selectedChat = useChatStore((s) => s.selectedChat);
+  const [chats, setChats] = useState<Chat[]>([]);
 
   useEffect(() => {
     if (name) {
@@ -24,6 +29,13 @@ const ChatArea = () => {
       setUsers([]);
     }
   }, [name]);
+
+  useEffect(() => {
+    axios
+      .get(`/api/chats/${user?.id}`)
+      .then((res) => setChats(res.data))
+      .catch((err) => console.log(err));
+  }, [user, selectedChat]);
 
   return (
     <Box className="bg-secondary border-r">
@@ -60,45 +72,43 @@ const ChatArea = () => {
         </Flex>
       </Flex>
       <Box px="2" className="space-y-4 h-[calc(100dvh-135px)] overflow-auto">
-        {users.map((user) => (
+        {users.map((friend) => (
           <Flex
-            key={user.id}
+            onClick={() =>
+              axios
+                .post("/api/chats", {
+                  createrId: user?.id,
+                  friendId: friend.id,
+                })
+                .then(({ data }) => {
+                  setSelectedChat(data.id);
+                  setName("");
+                })
+                .catch((err) => console.log(err))
+            }
+            key={friend.id}
             align="center"
             justify="between"
             p="2"
             className="rounded cursor-pointer hover:bg-gray-200"
           >
             <Flex gap="2" align="center">
-              <Avatar radius="full" src={user.image!} fallback="U" />
+              <Avatar radius="full" src={friend.image!} fallback="U" />
               <Flex direction="column">
-                <Text className="text-sm font-semibold"> {user.name} </Text>
+                <Text className="text-sm font-semibold"> {friend.name} </Text>
                 <span className="text-sm"> Say Hello ✋ </span>
               </Flex>
             </Flex>
           </Flex>
         ))}
 
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Flex
-            key={i}
-            align="center"
-            justify="between"
-            p="2"
-            className="rounded cursor-pointer hover:bg-gray-200"
-          >
-            <Flex gap="2" align="center">
-              <Avatar radius="full" src="/gap.jpg" fallback="U" />
-              <Flex direction="column">
-                <Text className="text-sm font-semibold">Md Herdoy</Text>
-                <span className="text-sm"> Hey ✋ </span>
-              </Flex>
-            </Flex>
-            <Flex direction="column" justify="between">
-              <span className="text-[10px]">11:35am</span>
-              <span className="text-sm"></span>
-            </Flex>
-          </Flex>
-        ))}
+        {!name && (
+          <Box>
+            {chats.map((chat) => (
+              <ChatDetails key={chat.id} chat={chat} />
+            ))}
+          </Box>
+        )}
       </Box>
     </Box>
   );
