@@ -12,14 +12,14 @@ import { Button } from "@/components/ui/button";
 import usePost from "@/hooks/usePost";
 import { handleUpload } from "@/lib/utils";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { ChangeEvent, useContext, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { BiImageAdd } from "react-icons/bi";
 import { BsGlobe } from "react-icons/bs";
 import { FaVideo } from "react-icons/fa";
 import { IoMdPhotos } from "react-icons/io";
 import { TfiVideoClapper } from "react-icons/tfi";
-import { AuthContext } from "../auth-provdier";
 
 const CreatePost = () => {
   const [text, setText] = useState("");
@@ -42,11 +42,11 @@ const CreatePost = () => {
 
   const { mutate } = usePost();
 
-  async function handleSubmit() {
+  async function handleSubmit(userId: string) {
     setLoading(true);
     const downloadURL = await handleUpload(img);
     mutate({
-      userId: user?.id!,
+      userId,
       text,
       image: downloadURL,
     });
@@ -54,16 +54,18 @@ const CreatePost = () => {
     setOpen(false);
   }
 
-  const user = useContext(AuthContext);
+  const { data: session } = useSession();
+  if (!session || !session.user) return null;
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger className="w-full">
         <Box p="3" className="space-y-4 border-400 rounded-lg shadow-lg border">
           <Flex gap="2">
             <Avatar
-              src={user?.image!}
+              src={session.user.image}
               radius="full"
-              fallback={user?.name?.slice(0, 1).toLocaleUpperCase()!}
+              fallback={session.user.name.slice(0, 1).toLocaleUpperCase()}
             />
             <input
               className="border border-gray-300 flex-1 rounded-full px-3 focus:outline-none"
@@ -115,9 +117,9 @@ const CreatePost = () => {
         </AlertDialogHeader>
         <Flex align="center" className="!gap-2">
           <Avatar
-            src={user?.image!}
+            src={session.user.image}
             radius="full"
-            fallback={user?.name?.slice(0, 1).toLocaleUpperCase()!}
+            fallback={session.user.name.slice(0, 1).toLocaleUpperCase()}
             className="max-w-11 h-11 !rounded-full overflow-hidden object-cover border-2"
           />
           <Flex
@@ -126,7 +128,7 @@ const CreatePost = () => {
             justify="start"
             direction="column"
           >
-            <Text> {user?.name} </Text>
+            <Text> {session.user.name} </Text>
             <Text className="flex items-center gap-1 text-primary">
               <BsGlobe />
               Public
@@ -137,7 +139,7 @@ const CreatePost = () => {
           <textarea
             onChange={(e) => setText(e.target.value)}
             className="w-full focus:outline-none"
-            placeholder={`What's on your mind ${user?.name}`}
+            placeholder={`What's on your mind ${session.user.name}`}
           />
           <Flex
             align="center"
@@ -187,7 +189,10 @@ const CreatePost = () => {
         </Box>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button disabled={text.length < 1 && !img} onClick={handleSubmit}>
+          <Button
+            disabled={text.length < 1 && !img}
+            onClick={() => handleSubmit(session.user.id)}
+          >
             Continue
           </Button>
         </AlertDialogFooter>

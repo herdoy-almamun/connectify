@@ -1,13 +1,13 @@
 "use client";
 
 import { Avatar, Box, Container, Flex, Heading, Text } from "@radix-ui/themes";
-import { useContext } from "react";
-import { AuthContext } from "../auth-provdier";
+import { useSession } from "next-auth/react";
 import Navbar from "../navbar";
 import UpdateProfileImage from "./update-profile-image";
 
 const Profile = () => {
-  const user = useContext(AuthContext);
+  const { data: session } = useSession();
+  if (!session || !session.user) return null;
 
   return (
     <>
@@ -18,16 +18,16 @@ const Profile = () => {
             <Avatar
               radius="full"
               size="9"
-              src={user?.image!}
-              fallback={user?.name!}
+              src={session.user.image}
+              fallback={session.user.name}
             />
             <Box className="absolute bottom-0  right-4">
               <UpdateProfileImage />
             </Box>
           </Flex>
           <Flex align="center" justify="center" direction="column">
-            <Heading size="7">{user?.name}</Heading>
-            <Text> {user?.email} </Text>
+            <Heading size="7">{session.user.name}</Heading>
+            <Text> {session.user.email} </Text>
           </Flex>
         </Flex>
       </Container>

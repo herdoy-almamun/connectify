@@ -5,7 +5,6 @@ import localFont from "next/font/local";
 import "react-image-crop/dist/ReactCrop.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AuthProvdier from "./auth-provdier";
 import "./globals.css";
 import QueryClientProvider from "./query-client-provider";
 import SessionProvider from "./session-provider";
@@ -38,9 +37,7 @@ export default function RootLayout({
       >
         <QueryClientProvider>
           <SessionProvider>
-            <AuthProvdier>
-              <Theme>{children}</Theme>
-            </AuthProvdier>
+            <Theme>{children}</Theme>
           </SessionProvider>
         </QueryClientProvider>
         <ToastContainer />

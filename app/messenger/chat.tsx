@@ -5,8 +5,8 @@ import { formatDate } from "@/lib/utils";
 import { useChatStore } from "@/store";
 import { Chat } from "@prisma/client";
 import { Avatar, Flex, Text } from "@radix-ui/themes";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../auth-provdier";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 interface Props {
   chat: Chat;
@@ -16,11 +16,11 @@ const ChatDetails = ({ chat }: Props) => {
   const [friendId, setFriendId] = useState("");
   const setSelectedChat = useChatStore((s) => s.setSelectedChat);
 
-  const user = useContext(AuthContext);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const getFriendId = () => {
-      const friendId = chat.users.find((userId) => userId !== user?.id);
+      const friendId = chat.users.find((userId) => userId !== session?.user.id);
       setFriendId(friendId!);
     };
     getFriendId();

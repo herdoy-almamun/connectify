@@ -1,5 +1,4 @@
 "use client";
-import { AuthContext } from "@/app/auth-provdier";
 import { queryClient } from "@/app/query-client-provider";
 import {
   AlertDialog,
@@ -17,6 +16,7 @@ import setCanvasPreview from "@/set-canvas-preview";
 import { Flex } from "@radix-ui/themes";
 import axios from "axios";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { useSession } from "next-auth/react";
 import { ChangeEvent, useContext, useRef, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import ReactCrop, {
@@ -30,7 +30,7 @@ const ASPECT_RATIO = 4 / 4;
 const MIN_DIMENSION = 150;
 
 const UpdateProfileImage = () => {
-  const user = useContext(AuthContext);
+  const { data: session } = useSession();
   const imgRef = useRef<HTMLImageElement | null>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [imgSrc, setImgSrc] = useState<string>("");
@@ -79,6 +79,8 @@ const UpdateProfileImage = () => {
     const centeredCrop = centerCrop(crop, width, height);
     setCrop(centeredCrop);
   };
+
+  if (!session || !session.user) return null;
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -167,7 +169,7 @@ const UpdateProfileImage = () => {
                       setLoading(false);
                       setOpen(false);
                       axios
-                        .put(`/api/users/${user?.email}`, {
+                        .put(`/api/users/${session.user.id}`, {
                           image: downloadURL,
                         })
                         .then(() =>

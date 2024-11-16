@@ -7,23 +7,24 @@ import { IoMdMenu } from "react-icons/io";
 import { useChatStore } from "@/store";
 import { Chat, User } from "@prisma/client";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
-import { AuthContext } from "../auth-provdier";
 import ChatDetails from "./chat";
 
 const ChatArea = () => {
   const [name, setName] = useState("");
   const [users, setUsers] = useState<User[]>([]);
-  const user = useContext(AuthContext);
   const setSelectedChat = useChatStore((s) => s.setSelectedChat);
   const selectedChat = useChatStore((s) => s.selectedChat);
   const [chats, setChats] = useState<Chat[]>([]);
 
+  const { data: session } = useSession();
+
   useEffect(() => {
     if (name) {
       axios
-        .post("/api/friends", { name, current: user?.id })
+        .post("/api/friends", { name, current: session?.user.id })
         .then((res) => setUsers(res.data));
     } else {
       setUsers([]);
@@ -32,10 +33,12 @@ const ChatArea = () => {
 
   useEffect(() => {
     axios
-      .get(`/api/chats/${user?.id}`)
+      .get(`/api/chats/${session?.user?.id}`)
       .then((res) => setChats(res.data))
       .catch((err) => console.log(err));
-  }, [user, selectedChat]);
+  }, [session?.user, selectedChat]);
+
+  if (!session || !session.user) return null;
 
   return (
     <Box className="bg-secondary border-r">
@@ -77,7 +80,7 @@ const ChatArea = () => {
             onClick={() =>
               axios
                 .post("/api/chats", {
-                  createrId: user?.id,
+                  createrId: session.user.id,
                   friendId: friend.id,
                 })
                 .then(({ data }) => {

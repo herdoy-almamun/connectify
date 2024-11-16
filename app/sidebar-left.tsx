@@ -1,15 +1,15 @@
 "use client";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
-import { AuthContext } from "./auth-provdier";
 
 const SidebarLeft = () => {
   const router = useRouter();
-  const user = useContext(AuthContext);
+  const { data: session } = useSession();
+  if (!session || !session.user) return null;
+
   return (
     <Box
       display={{ initial: "none", md: "block" }}
@@ -24,12 +24,12 @@ const SidebarLeft = () => {
       >
         <Box className="w-10 flex items-center justify-center">
           <Avatar
-            src={user?.image!}
+            src={session.user.image}
             radius="full"
-            fallback={user?.name?.slice(0, 1).toLocaleUpperCase()!}
+            fallback={session.user.name.slice(0, 1).toLocaleUpperCase()!}
           />
         </Box>
-        <Text> {user?.name} </Text>
+        <Text> {session.user.name} </Text>
       </Flex>
       <Flex
         align="center"

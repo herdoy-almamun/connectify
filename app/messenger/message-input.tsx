@@ -3,18 +3,21 @@ import { Button } from "@/components/ui/button";
 import useMessage from "@/hooks/useMessage";
 import { useChatStore } from "@/store";
 import { Flex } from "@radix-ui/themes";
-import { useContext, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { AiOutlineSend } from "react-icons/ai";
 import { BsEmojiSmile } from "react-icons/bs";
 import { PiPaperclip } from "react-icons/pi";
-import { AuthContext } from "../auth-provdier";
 
 const MessageInput = () => {
   const chatId = useChatStore((s) => s.selectedChat);
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
-  const user = useContext(AuthContext);
   const { mutate } = useMessage();
+
+  const { data: session } = useSession();
+  if (!session || !session.user) return null;
+
   return (
     <Flex
       align="center"
@@ -37,7 +40,7 @@ const MessageInput = () => {
       />
       <Button
         onClick={() => {
-          mutate({ chatId, sender: user?.id!, text, image });
+          mutate({ chatId, sender: session.user.id, text, image });
           setText("");
           setImage("");
         }}

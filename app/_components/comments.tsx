@@ -11,11 +11,11 @@ import useComment from "@/hooks/useComment";
 import useComments from "@/hooks/useComments";
 import { Post } from "@prisma/client";
 import { Box, Flex, Heading, Text } from "@radix-ui/themes";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { BsGlobe } from "react-icons/bs";
 import { FaRegComment } from "react-icons/fa";
-import { AuthContext } from "../auth-provdier";
 import CommentDetails from "./comment";
 
 interface Props {
@@ -26,7 +26,6 @@ interface Props {
 
 const Comments = ({ postAuthorImage, postAuthorName, post }: Props) => {
   const [comment, setComment] = useState("");
-  const user = useContext(AuthContext);
   function formatDate(input: string | Date): string {
     const date = typeof input === "string" ? new Date(input) : input;
     return date.toDateString();
@@ -34,6 +33,9 @@ const Comments = ({ postAuthorImage, postAuthorName, post }: Props) => {
 
   const { mutate } = useComment();
   const { data: comments } = useComments(post.id);
+
+  const { data: session } = useSession();
+  if (!session || !session.user) return null;
 
   return (
     <AlertDialog>
@@ -119,7 +121,7 @@ const Comments = ({ postAuthorImage, postAuthorName, post }: Props) => {
           <Button
             disabled={!comment}
             onClick={() => {
-              mutate({ userId: user?.id!, postId: post.id, comment });
+              mutate({ userId: session.user.id, postId: post.id, comment });
               setComment("");
             }}
           >

@@ -1,10 +1,9 @@
-import prisma from "@/prisma/client";
+import { AuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-
-import { AuthOptions } from "next-auth";
+import prisma from "@/prisma/client";
 
 const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -34,6 +33,7 @@ const authOptions: AuthOptions = {
         );
         if (!checkPassword) return null;
 
+        // Return the user object that contains user info, which will be stored in the JWT
         return user ? user : null;
       },
     }),
@@ -42,8 +42,31 @@ const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
+
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // Use JWT for session
+  },
+
+  callbacks: {
+    // The JWT callback is fired when a JWT is created or updated.
+    async jwt({ token, user }) {
+      // If the user object is available (from login), add their info to the token
+      if (user) {
+        token.id = user.id;
+        token.image = user.image; // Assuming the user object has the `image` field
+      }
+      return token;
+    },
+
+    // This callback is fired when the session is checked, and it's where you customize session data
+    async session({ session, token }) {
+      // Attach the user id and image to the session object
+      if (token) {
+        session.user.id = token.id as string; // Cast to string if needed
+        session.user.image = token.image as string; // Cast to string if needed
+      }
+      return session;
+    },
   },
 };
 
