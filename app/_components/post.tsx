@@ -2,10 +2,10 @@
 import useComments from "@/hooks/useComments";
 import useLike from "@/hooks/useLike";
 import useLikes from "@/hooks/useLikes";
-import formatDate from "@/utils/formateDate";
-import { Post, User } from "@prisma/client";
+import { useUserById } from "@/hooks/useUser";
+import { formatDate } from "@/lib/utils";
+import { Post } from "@prisma/client";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
-import axios from "axios";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { BsGlobe } from "react-icons/bs";
@@ -24,17 +24,15 @@ interface Props {
 }
 
 const SinglePost = ({ post }: Props) => {
-  const [user, setUser] = useState<User>();
   const [isLike, setIsLike] = useState<boolean>(false);
-
   const authUser = useContext(AuthContext);
 
-  useEffect(() => {
-    axios.get(`/api/user/${post.userId}`).then((res) => setUser(res.data));
-  }, [post]);
+  const { data: user } = useUserById(post.userId);
 
   const { data: likes } = useLikes(post.id);
+
   const { data: comments } = useComments(post.id);
+
   const { mutate } = useLike();
 
   const handleLike = () => {

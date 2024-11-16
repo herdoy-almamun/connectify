@@ -1,5 +1,5 @@
 "use client";
-import useUser from "@/hooks/useUser";
+import { useUser } from "@/hooks/useUser";
 import { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { createContext, PropsWithChildren } from "react";

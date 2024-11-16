@@ -1,10 +1,10 @@
 "use client";
 
+import { useUserById } from "@/hooks/useUser";
+import { formatDate } from "@/lib/utils";
 import { useChatStore } from "@/store";
-import formatDate from "@/utils/formateDate";
-import { Chat, User } from "@prisma/client";
+import { Chat } from "@prisma/client";
 import { Avatar, Flex, Text } from "@radix-ui/themes";
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../auth-provdier";
 
@@ -14,7 +14,6 @@ interface Props {
 
 const ChatDetails = ({ chat }: Props) => {
   const [friendId, setFriendId] = useState("");
-  const [friend, setFriend] = useState<User>();
   const setSelectedChat = useChatStore((s) => s.setSelectedChat);
 
   const user = useContext(AuthContext);
@@ -27,12 +26,7 @@ const ChatDetails = ({ chat }: Props) => {
     getFriendId();
   }, [chat]);
 
-  useEffect(() => {
-    axios
-      .get(`/api/user/${friendId}`)
-      .then((res) => setFriend(res.data))
-      .catch((err) => console.log(err));
-  }, [friendId]);
+  const { data: friend } = useUserById(friendId);
 
   return (
     <Flex

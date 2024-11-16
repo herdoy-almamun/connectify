@@ -11,11 +11,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { storage } from "@/firebase";
+import { handleUpload } from "@/lib/utils";
 import setCanvasPreview from "@/set-canvas-preview";
 import { Box, Grid } from "@radix-ui/themes";
 import axios from "axios";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import NextImage from "next/image";
 import { ChangeEvent, useRef, useState } from "react";
 import { HiOutlinePlus } from "react-icons/hi";
@@ -178,28 +177,20 @@ const CreateStory = ({ userImage, userName, userId }: Props) => {
                   )
                 );
                 const dataUrl = previewCanvasRef.current.toDataURL();
-                const response = await fetch(dataUrl);
-                const blob = await response.blob();
 
-                const storageRef = ref(storage, `${Date.now()}`);
-                await uploadBytesResumable(storageRef, blob).then(() => {
-                  getDownloadURL(storageRef).then(
-                    async (downloadURL: string) => {
-                      setLoading(false);
-                      setOpen(false);
-                      axios
-                        .post("/api/storys", {
-                          userId,
-                          image: downloadURL,
-                        })
-                        .then(() =>
-                          queryClient.invalidateQueries({
-                            queryKey: ["storys"],
-                          })
-                        );
-                    }
-                  );
-                });
+                const image = await handleUpload(dataUrl);
+                axios
+                  .post("/api/storys", {
+                    userId,
+                    image,
+                  })
+                  .then(() => {
+                    queryClient.invalidateQueries({
+                      queryKey: ["storys"],
+                    });
+                    setLoading(false);
+                    setOpen(false);
+                  });
               }
             }}
           >

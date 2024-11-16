@@ -9,10 +9,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { storage } from "@/firebase";
+import usePost from "@/hooks/usePost";
+import { handleUpload } from "@/lib/utils";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
-import axios from "axios";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import Image from "next/image";
 import { ChangeEvent, useContext, useState } from "react";
 import { BiImageAdd } from "react-icons/bi";
@@ -21,7 +20,6 @@ import { FaVideo } from "react-icons/fa";
 import { IoMdPhotos } from "react-icons/io";
 import { TfiVideoClapper } from "react-icons/tfi";
 import { AuthContext } from "../auth-provdier";
-import { queryClient } from "../query-client-provider";
 
 const CreatePost = () => {
   const [text, setText] = useState("");
@@ -41,6 +39,20 @@ const CreatePost = () => {
       fileReader.readAsDataURL(file); // Start reading the file
     }
   };
+
+  const { mutate } = usePost();
+
+  async function handleSubmit() {
+    setLoading(true);
+    const downloadURL = await handleUpload(img);
+    mutate({
+      userId: user?.id!,
+      text,
+      image: downloadURL,
+    });
+    setLoading(false);
+    setOpen(false);
+  }
 
   const user = useContext(AuthContext);
   return (
@@ -175,32 +187,7 @@ const CreatePost = () => {
         </Box>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button
-            disabled={text.length < 1 && !img}
-            onClick={async () => {
-              setLoading(true);
-              const response = await fetch(img);
-              const blob = await response.blob();
-              const storageRef = ref(storage, `${Date.now()}`);
-              await uploadBytesResumable(storageRef, blob).then(() => {
-                getDownloadURL(storageRef).then(async (downloadURL: string) => {
-                  setLoading(false);
-                  setOpen(false);
-                  axios
-                    .post("/api/posts", {
-                      userId: user?.id,
-                      text,
-                      image: img ? downloadURL : "",
-                    })
-                    .then(() =>
-                      queryClient.invalidateQueries({
-                        queryKey: ["posts"],
-                      })
-                    );
-                });
-              });
-            }}
-          >
+          <Button disabled={text.length < 1 && !img} onClick={handleSubmit}>
             Continue
           </Button>
         </AlertDialogFooter>
