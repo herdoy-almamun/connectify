@@ -7,6 +7,7 @@ const useLikes = (postId: string) =>
     queryKey: ["likes", postId],
     queryFn: () =>
       axios.get<Like[]>(`/api/likes/${postId}`).then((res) => res.data),
+    staleTime: 10_000_000,
   });
 
 export default useLikes;

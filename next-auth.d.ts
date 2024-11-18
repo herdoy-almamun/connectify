@@ -8,7 +8,7 @@ declare module "next-auth" {
       id: string; // Add the `id` field to the session user
       email: string;
       name: string;
-      image?: string;
+      image: string;
     };
   }
 }

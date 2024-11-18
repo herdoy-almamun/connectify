@@ -9,6 +9,7 @@ const useMessages = () => {
     queryKey: ["messages", selectedChat],
     queryFn: () =>
       axios.post("/api/messages", { selectedChat }).then((res) => res.data),
+    staleTime: 10_000_000,
   });
 };
 

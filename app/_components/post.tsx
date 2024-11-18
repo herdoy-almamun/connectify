@@ -2,7 +2,6 @@
 import useComments from "@/hooks/useComments";
 import useLike from "@/hooks/useLike";
 import useLikes from "@/hooks/useLikes";
-import { useUserById } from "@/hooks/useUser";
 import { formatDate } from "@/lib/utils";
 import { Post } from "@prisma/client";
 import { Avatar, Box, Flex, Text } from "@radix-ui/themes";
@@ -18,6 +17,7 @@ import { LuHeart } from "react-icons/lu";
 import { PiShareFatLight } from "react-icons/pi";
 import { SlOptions } from "react-icons/sl";
 import Comments from "./comments";
+import { useUser } from "@/hooks/useUser";
 
 interface Props {
   post: Post;
@@ -28,7 +28,7 @@ const SinglePost = ({ post }: Props) => {
 
   const { data: session } = useSession();
 
-  const { data: user } = useUserById(post.userId);
+  const { data: user } = useUser(post.userId);
 
   const { data: likes } = useLikes(post.id);
 

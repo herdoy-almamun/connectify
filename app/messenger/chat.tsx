@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserById } from "@/hooks/useUser";
+import { useUser } from "@/hooks/useUser";
 import { formatDate } from "@/lib/utils";
 import { useChatStore } from "@/store";
 import { Chat } from "@prisma/client";
@@ -26,7 +26,7 @@ const ChatDetails = ({ chat }: Props) => {
     getFriendId();
   }, [chat]);
 
-  const { data: friend } = useUserById(friendId);
+  const { data: friend } = useUser(friendId);
 
   return (
     <Flex

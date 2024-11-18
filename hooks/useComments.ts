@@ -7,6 +7,7 @@ const useComments = (postId: string) =>
     queryKey: ["comments", postId],
     queryFn: () =>
       axios.get<Comment[]>(`/api/comments/${postId}`).then((res) => res.data),
+    staleTime: 10_000_000,
   });
 
 export default useComments;

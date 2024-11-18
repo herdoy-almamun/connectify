@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import QueryClientProvider from "./query-client-provider";
 import SessionProvider from "./session-provider";
+import SocketProvider from "./socket-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,7 +38,9 @@ export default function RootLayout({
       >
         <QueryClientProvider>
           <SessionProvider>
-            <Theme>{children}</Theme>
+            <Theme>
+              <SocketProvider>{children}</SocketProvider>
+            </Theme>
           </SessionProvider>
         </QueryClientProvider>
         <ToastContainer />

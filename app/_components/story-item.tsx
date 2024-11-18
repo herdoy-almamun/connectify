@@ -1,5 +1,5 @@
 "use client";
-import { useUserById } from "@/hooks/useUser";
+import { useUser } from "@/hooks/useUser";
 import { Story } from "@prisma/client";
 import { Avatar, Box } from "@radix-ui/themes";
 import Image from "next/image";
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const StoryItem = ({ story }: Props) => {
-  const { data: user } = useUserById(story.id);
+  const { data: user } = useUser(story.id);
 
   return (
     <Box className="h-full w-full rounded-xl overflow-hidden relative">
