@@ -1,6 +1,5 @@
-import { storage } from "@/firebase";
+import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -14,19 +13,21 @@ export function formatDate(input: string | Date): string {
 
 export const handleUpload = async (image: string): Promise<string> => {
   try {
-    const response = await fetch(image);
-    const blob = await response.blob();
-    const storageRef = ref(storage, `${Date.now()}`);
+    const formData = new FormData();
+    formData.append("file", image); // Image file or base64 string
+    formData.append("upload_preset", "bh3lmi8g"); 
 
-    // Upload the image to Firebase Storage
-    await uploadBytesResumable(storageRef, blob);
+    // Send the image to Cloudinary
+    const response = await axios.post(
+      "https://api.cloudinary.com/v1_1/docf0sevm/image/upload",
+      formData
+    );
 
-    // Get the download URL after the upload is complete
-    const downloadURL = await getDownloadURL(storageRef);
+    const downloadURL = response.data.secure_url; 
 
-    return downloadURL; // Return the download URL
+    return downloadURL; 
   } catch (error) {
     console.error("Error uploading image:", error);
-    throw new Error("Upload failed"); // Or return null/empty string if you'd prefer
+    throw new Error("Upload failed"); 
   }
 };

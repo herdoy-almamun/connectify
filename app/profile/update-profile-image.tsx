@@ -1,5 +1,4 @@
 "use client";
-import { queryClient } from "@/app/query-client-provider";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -11,13 +10,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { storage } from "@/firebase";
+import { handleUpload } from "@/lib/utils";
 import setCanvasPreview from "@/set-canvas-preview";
 import { Flex } from "@radix-ui/themes";
 import axios from "axios";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useSession } from "next-auth/react";
-import { ChangeEvent, useContext, useRef, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import ReactCrop, {
   centerCrop,
@@ -159,25 +157,16 @@ const UpdateProfileImage = () => {
                   )
                 );
                 const dataUrl = previewCanvasRef.current.toDataURL();
-                const response = await fetch(dataUrl);
-                const blob = await response.blob();
 
-                const storageRef = ref(storage, `${Date.now()}`);
-                await uploadBytesResumable(storageRef, blob).then(() => {
-                  getDownloadURL(storageRef).then(
-                    async (downloadURL: string) => {
-                      setLoading(false);
-                      setOpen(false);
-                      axios
-                        .put(`/api/users/${session.user.id}`, {
-                          image: downloadURL,
-                        })
-                        .then(() =>
-                          queryClient.invalidateQueries({ queryKey: ["user"] })
-                        );
-                    }
-                  );
-                });
+                const downloadURL = await handleUpload(dataUrl);
+                axios
+                  .put(`/api/users/${session.user.id}`, {
+                    image: downloadURL,
+                  })
+                  .then(() => {
+                    setLoading(false);
+                    setOpen(false);
+                  });
               }
             }}
           >
